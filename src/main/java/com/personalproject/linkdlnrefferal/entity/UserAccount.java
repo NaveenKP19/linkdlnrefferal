@@ -55,7 +55,7 @@ public class UserAccount {
         updatedAt =now;
     }
 
-    @PrePersist
+    @PreUpdate
     protected void onUpdate(){
         updatedAt = LocalDateTime.now();
     }
