@@ -24,7 +24,7 @@ public class SecurityConfig {
 
         // Allow Angular frontend
         configuration.setAllowedOrigins(
-                List.of("http://localhost:4200")
+                List.of("http://localhost:4200","https://linkdrefferal.netlify.app")
         );
 
         // Allow required HTTP methods
