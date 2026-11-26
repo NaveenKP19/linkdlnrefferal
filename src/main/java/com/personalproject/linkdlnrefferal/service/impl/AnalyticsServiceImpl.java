@@ -9,6 +9,7 @@ import com.personalproject.linkdlnrefferal.dto.response.FunnelStepResponse;
 import com.personalproject.linkdlnrefferal.dto.response.ReferralRequestResponse;
 import com.personalproject.linkdlnrefferal.dto.response.StatusSliceResponse;
 import com.personalproject.linkdlnrefferal.entity.FollowUp;
+import com.personalproject.linkdlnrefferal.entity.OutreachMessage;
 import com.personalproject.linkdlnrefferal.entity.ReferralRequest;
 import com.personalproject.linkdlnrefferal.mapper.FollowUpMapper;
 import com.personalproject.linkdlnrefferal.mapper.ReferralRequestMapper;
@@ -17,6 +18,7 @@ import com.personalproject.linkdlnrefferal.repository.ConnectionRepository;
 import com.personalproject.linkdlnrefferal.repository.FollowUpRepository;
 import com.personalproject.linkdlnrefferal.repository.JobApplicationRepository;
 import com.personalproject.linkdlnrefferal.repository.OpportunityRepository;
+import com.personalproject.linkdlnrefferal.repository.OutreachMessageRepository;
 import com.personalproject.linkdlnrefferal.repository.ReferralRequestRepository;
 import com.personalproject.linkdlnrefferal.security.AuthenticatedUserService;
 import com.personalproject.linkdlnrefferal.service.AnalyticsService;
@@ -46,6 +48,7 @@ public class AnalyticsServiceImpl implements AnalyticsService {
     private final JobApplicationRepository jobApplicationRepository;
     private final CampaignRepository campaignRepository;
     private final FollowUpRepository followUpRepository;
+    private final OutreachMessageRepository outreachMessageRepository;
     private final ReferralRequestMapper referralRequestMapper;
     private final FollowUpMapper followUpMapper;
     private final AuthenticatedUserService authenticatedUserService;
@@ -86,6 +89,34 @@ public class AnalyticsServiceImpl implements AnalyticsService {
                 stat("accepted", "Accepted", String.valueOf(accepted), "Accepted referrals", "success", "bi-trophy"),
                 stat("applications", "Active Applications", String.valueOf(activeApplications), "Applications still in progress", "primary", "bi-file-earmark-text"),
                 stat("followUps", "Open Follow-ups", String.valueOf(pendingFollowUps), "Follow-ups still to complete", "danger", "bi-clock-history")
+        );
+    }
+
+    @Override
+    public List<DashboardStatResponse> getOutreachSummary(String range) {
+        List<OutreachMessage> messages = outreachMessageRepository
+                .findAllByUserIdOrderByCreatedAtDesc(currentUserId());
+
+        long sent = messages.stream()
+                .filter(message -> "Sent".equalsIgnoreCase(message.getInviteStatus()))
+                .count();
+        long accepted = messages.stream()
+                .filter(message -> "Accepted".equalsIgnoreCase(message.getInviteStatus()))
+                .count();
+        long notSent = messages.stream()
+                .filter(message -> message.getInviteStatus() == null
+                        || "Not Sent".equalsIgnoreCase(message.getInviteStatus()))
+                .count();
+        long emailsSent = messages.stream()
+                .filter(message -> "Sent".equalsIgnoreCase(message.getEmailStatus()))
+                .count();
+
+        return List.of(
+                stat("all", "LinkedIn Outreach", String.valueOf(messages.size()), "Tracked outreach records", "primary", "bi-people"),
+                stat("Not Sent", "Not Sent", String.valueOf(notSent), "Invites ready to send", "secondary", "bi-pencil-square"),
+                stat("Sent", "Pending", String.valueOf(sent), "Invites sent and awaiting response", "warning", "bi-hourglass-split"),
+                stat("Accepted", "Accepted", String.valueOf(accepted), "Connections who accepted", "success", "bi-check-circle"),
+                stat("emailSent", "Emails Sent", String.valueOf(emailsSent), "Referral emails marked sent", "info", "bi-envelope-check")
         );
     }
 

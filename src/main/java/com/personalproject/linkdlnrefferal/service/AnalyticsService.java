@@ -17,6 +17,8 @@ public interface AnalyticsService {
 
     List<DashboardStatResponse> getSummary(String range);
 
+    List<DashboardStatResponse> getOutreachSummary(String range);
+
     List<ActivityPointResponse> getActivity(String range);
 
     List<StatusSliceResponse> getStatusDistribution(String range);

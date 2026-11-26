@@ -71,6 +71,16 @@ public class SecurityConfig {
                                 "/api/v1/auth/logout"
                         ).permitAll()
                         .requestMatchers(
+                                HttpMethod.GET,
+                                "/api/v1/auth/linkedin",
+                                "/api/v1/auth/linkedin/callback"
+                        ).permitAll()
+                        .requestMatchers(
+                                HttpMethod.POST,
+                                "/api/v1/auth/linkedin/exchange",
+                                "/api/v1/auth/linkedin/complete-registration"
+                        ).permitAll()
+                        .requestMatchers(
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/swagger-ui.html",

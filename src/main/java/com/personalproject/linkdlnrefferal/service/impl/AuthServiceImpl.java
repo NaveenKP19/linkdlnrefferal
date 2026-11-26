@@ -114,6 +114,13 @@ public class AuthServiceImpl implements AuthService {
                 .orElseThrow(() -> new ResourceNotFoundException("User account not found"));
     }
 
+    @Override
+    public AuthResponse issueTokensForUserId(Long userId) {
+        UserAccount user = userAccountRepository.findByIdAndActiveTrue(userId)
+                .orElseThrow(() -> new UnauthorizedException("Invalid or inactive user account"));
+        return issueTokens(user);
+    }
+
     private AuthResponse issueTokens(UserAccount user) {
         String accessToken = jwtService.generateAccessToken(user.getId(), user.getEmail());
         String refreshToken = jwtService.generateRefreshToken(user.getId(), user.getEmail());

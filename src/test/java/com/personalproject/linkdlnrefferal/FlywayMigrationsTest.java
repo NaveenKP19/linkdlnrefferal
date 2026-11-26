@@ -22,6 +22,6 @@ class FlywayMigrationsTest {
 
     @Test
     void appliesAllMigrations() {
-        assertThat(flyway.info().applied()).hasSize(12);
+        assertThat(flyway.info().applied()).hasSize(15);
     }
 }

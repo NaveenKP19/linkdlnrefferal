@@ -35,6 +35,11 @@ public class AnalyticsController {
         return ResponseEntity.ok(analyticsService.getSummary(range));
     }
 
+    @GetMapping("/outreach-summary")
+    public ResponseEntity<List<DashboardStatResponse>> getOutreachSummary(@RequestParam(required = false) String range) {
+        return ResponseEntity.ok(analyticsService.getOutreachSummary(range));
+    }
+
     @GetMapping("/activity")
     public ResponseEntity<List<ActivityPointResponse>> getActivity(@RequestParam(required = false) String range) {
         return ResponseEntity.ok(analyticsService.getActivity(range));

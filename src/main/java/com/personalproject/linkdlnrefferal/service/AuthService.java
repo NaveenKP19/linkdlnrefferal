@@ -17,4 +17,6 @@ public interface AuthService {
     void logout(RefreshTokenRequest request);
 
     UserAccountResponse me(Long userId);
+
+    AuthResponse issueTokensForUserId(Long userId);
 }
